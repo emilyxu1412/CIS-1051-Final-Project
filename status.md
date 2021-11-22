@@ -2,15 +2,15 @@
 
 #### Your name
 
-TODO
+Emily 
 
 #### Your section leader's name
 
-TODO
+N/A
 
 #### Project title
 
-TODO
+Steganography Encryp/Decrypt
 
 ***
 
@@ -18,12 +18,12 @@ Short answers for the below questions suffice. If you want to alter your plan fo
 
 #### What have you done for your project so far?
 
-TODO
+I have researched steganography and started to write a program that would take a file and alter the last two pixel digits
 
 #### What have you not done for your project yet?
 
-TODO
+Everything else hahah, need to continue research and understanding before doing the remaining program and perhaps decryption
 
 #### What problems, if any, have you encountered?
 
-TODO
+Making dumb mistakes like forgetting parenthesis
