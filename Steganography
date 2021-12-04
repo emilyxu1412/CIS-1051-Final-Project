@@ -1,0 +1,70 @@
+#This was done in Google Colab
+
+#import libraries
+import cv2
+import numpy as np
+import types
+from google.colab.patches import cv2_imshow #need this in case things crashes
+
+def textToBinary(message):
+  if type(message) == str:
+    return ''.join([format(ord(i),"08b") for i in message ]) #ord function returns integer representating the char, 08 formats number to 8 digits, b converts number to binary
+  elif type(message) == bytes:
+    return [format(i,"08b") for i in message] #converting the bytes into binary
+  elif type (message) == int:
+    return format(message, "08b") #Straight up converts to 8 digits and into binary
+  else:
+    print("Not supported")
+  
+def hideInfo(image, secretMssg):
+  # Calculate max bytes to encode, multiply by 3 because we read 3 pixels, then divide by 8 because 8 digits
+  #Shape [0] will give the number of rows
+  numBytes = image.shape [0] * image.shape[1] * 3 //8
+  print("Max bytes to encode: ", numBytes)
+
+  #Check if the message bytes to encode is less than the pic bytes
+  if len(secretMssg) > numBytes:
+    raise ValueError ("Insufficient bytes, need larger image or less data")
+  
+  secretMssg += 'hello'
+  
+  data_index = 0
+
+  #convert input data to binary format
+  binarySecretMssg = textToBinary(secretMssg)
+
+  data_len = len(binarySecretMssg) #find length of the data
+
+  for values in image:
+    for pixel in values:
+      r, g, b = textToBinary(pixel) #convert RGB values to binary
+      if data_index < data_len: #if there's data to store, we modify the least sig bit
+        pixel[0] = int(r[:-1] + binarySecretMssg[data_index],2) #hiding data into the least significant bit (last two) of red pixel
+        data_index +=1 #going to the next index
+      if data_index < data_len:
+        pixel[1] = int(g[:-1] + binarySecretMssg[data_index,2]) #hide data in least sig bit of green pixel
+        data_index += 1 #going to next
+      if data_index < data_len:
+        pixel[2] = int(b[:-1] + binarySecretMssg) #hide data in least sig bit of blue pixel
+        data_index += 1
+      if data_index >= data_len: #if everything is encoded, the loop ends
+        break
+  return image
+
+#encode the Data into the Image
+def encode_Data():
+  image = cv2.imread('orca.png') #reading the image using the CV-python lib
+
+  data = 'hello'
+  if (len(data) ==0):
+    raise ValueError('Data is empty') #need string to work
+  
+  encodeImage = hideInfo(image,data) #call the hideInfo function to hide the message
+  cv2.imwrite(filename, encoded_image)
+
+def Stegano():
+  encode_Data()
+
+Stegano() #encoding image
+
+#with the help of https://towardsdatascience.com/hiding-data-in-an-image-image-steganography-using-python-e491b68b1372
